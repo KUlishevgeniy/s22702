@@ -1,0 +1,24 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from bs4 import BeautifulSoup
+import time
+import psycopg2
+connection = psycopg2.connect(host= 'localhost', dbname='postgres', user='postgres', password='Q1w2e3r4')
+
+cursor=connection.cursor()
+
+place = 0
+s = Service('C:\1\chromedriver.exe')
+browser = webdriver.Chrome(service=s)
+r=browser.get(f'https://animego.org/anime?sort=r.rating&direction=desc')
+html_text = browser.page_source
+soup = BeautifulSoup(html_text, 'html.parser')
+films = soup.find_all("div", class_="media-body")
+for film in films:
+    place += 1
+    str1 = film.find("div", class_="text-gray-dark-6 small mb-2")
+   # print(place,") ", str1.get_text(), "\n")
+    insert_qwery = f"""INSERT INTO public.film( place, title)
+            VALUES ( {place}, '{str1.get_text()}' );"""
+    cursor.execute(insert_qwery)
+    connection.commit()
