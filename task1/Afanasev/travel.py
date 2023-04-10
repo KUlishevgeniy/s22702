@@ -34,7 +34,8 @@ for i in link:
     print(f'{image_number} :', name)
     print(cost)
     print(time)
-    insert_query=f"""INSERT INTO travel(id, name, cost, period) VALUES ({image_number}, '{name}', '{cost}', '{time}');"""
+    image_name=f'{image_number}.jpg'
+    insert_query=f"""INSERT INTO travel(id, name, cost, period, image) VALUES ({image_number}, '{name}', '{cost}', '{time}', '{image_name}');"""
     cursor.execute(insert_query)
     connection.commit()
     image_number = image_number + 1
