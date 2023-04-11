@@ -2,7 +2,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from bs4 import BeautifulSoup
 import psycopg2
-import wget
 
 main = 'https://carsdb.ru'
 connection = psycopg2.connect(host='localhost', dbname='db', user='postgres', password='123')
