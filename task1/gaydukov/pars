@@ -17,6 +17,7 @@ films = soup.find_all("div", class_="media-body")
 for film in films:
     place += 1
     str1 = film.find("div", class_="text-gray-dark-6 small mb-2")
+    
    # print(place,") ", str1.get_text(), "\n")
     insert_qwery = f"""INSERT INTO public.film( place, title)
             VALUES ( {place}, '{str1.get_text()}' );"""
