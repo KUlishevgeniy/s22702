@@ -23,9 +23,13 @@ for page in range(1, 3):
         place += 1
         str1 = vacancy.find("h3", class_="title-root-zZCwT iva-item-title-py3i_ title-listRedesign-_rejR title-root_maxHeight-X6PsH text-text-LurtD text-size-s-BxGpL text-bold-SinUO")
         str2 = vacancy.find("span", class_="price-text-_YGDY text-text-LurtD text-size-s-BxGpL")
-        image = vacancy.find("img", class_="photo-slider-image-YqMGj").get('src')
-        src=str(image)
-        print(image)
+        #image_block = vacancy.find("a", class_="iva-item-sliderLink-uLz1v")
+        try:
+            image = vacancy.find("img", class_="photo-slider-image-YqMGj").get('src')
+            src=str(image)
+            print(image)
+        except:
+            src = 'a'
         #try exception read
         i += 1
         #print(place,") ", str1.get_text(), str2.get_text(), "\n")
