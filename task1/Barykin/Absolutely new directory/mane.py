@@ -8,6 +8,7 @@ import time
 import psycopg2
 
 
+
 def parser():
     s = Service('/Users/barykingeorgij/Documents/chromedriver/chromedriver')
     browser = webdriver.Chrome(service=s)
