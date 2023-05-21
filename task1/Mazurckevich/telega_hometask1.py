@@ -1,5 +1,4 @@
 import telebot
-import random
 import psycopg2
 from telebot import types
 
@@ -16,29 +15,46 @@ def start(m, res=False):
     item2=types.KeyboardButton("Вывести конкретный номер списка")
     markup.add(item1)
     markup.add(item2)
-    bot.send_message(m.chat.id, 'Нажми \nВывести весь список чтобы увидеть все результаты по запросу "дизайнер презентаций" на Авито\nВывести конкретный номер списка чтобы увидеть конкретный номер этого списка', reply_markup=markup)
+    bot.send_message(m.chat.id, 'Привет! \n\n Этот бот позволяет увидеть первые 100 предложений на Авито по запросу "Дизайнер презентаций" \n\n Бот способен вывести весь список выпадающих предложений или же конкретный номер списка. \n\n Нажми на кнопку и проверь!', reply_markup=markup)
 #получение сообщений от юзера
 @bot.message_handler(content_types=["text"])
 def handle_text(message):
-    answer = 'Пустой запрос'
     #Если юзер нажал 1
     if message.text.strip() == 'Вывести весь список':
         select_qwery = f"""SELECT place, naming, price, image FROM public.hometask_table;"""
         cursor.execute(select_qwery)
-        textout_list = cursor.fetchall()
-        for i in range(0, len(textout_list)):
-            print(textout_list[i])
-
-            if textout_list[i] > textout_list[i + 1]: pass
-
+        for row in cursor.fetchall():
+            place = row[0]
+            naming = row[1]
+            price = row[2]
+            image = row[3]
+            bot.send_message(message.chat.id, "%d %s %s %s" %(place, naming, price, image))
+            #break
     #Если юзер нажал 2
     elif message.text.strip() == 'Вывести конкретный номер списка':
-        select_qwery = f"""SELECT place, naming, price, image FROM public.hometask_table;"""
+        markup = telebot.types.ReplyKeyboardMarkup(True)
+        msg = bot.send_message(message.from_user.id, 'Какой номер нужно вывести?', reply_markup = markup)
+        bot.register_next_step_handler(msg, after_text_2);
+
+    #если юзер тупой
+    else: bot.send_message(message.chat.id,'Нет, нужно выбрать из предложенных вариантов. Попробуй ещё.')
+ #вывод номера из таблицы
+def after_text_2(message):
+    number = message.text
+    try:
+        tmp = int(number)
+        select_qwery = f"""SELECT place, naming, price, image FROM public.hometask_table WHERE place = %d;""" %(tmp)
         cursor.execute(select_qwery)
-    #Отсылаем сообщение в чат
-    bot.send_message(message.chat.id, )
+        for row in cursor.fetchall():
+            place = row[0]
+            naming = row[1]
+            price = row[2]
+            image = row[3]
+            bot.send_message(message.chat.id, "%d %s %s %s" %(place, naming, price, image))
+    except:
+        markup = telebot.types.ReplyKeyboardMarkup(True)
+        msg = bot.send_message(message.from_user.id, 'Вы ввели не число. Какой номер нужно вывести?', reply_markup=markup)
+        bot.register_next_step_handler(msg, after_text_2);
 
 #запуск бота
 bot.polling(none_stop=True, interval=0)
-
-#запарсить данные в таблицу, в телеграмм боте выдывать записанные данные по записанному айди
