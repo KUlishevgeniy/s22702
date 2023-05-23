@@ -1,0 +1,21 @@
+import telebot
+import psycopg2
+bot=telebot.TeleBot('6193959892:AAGyaLPtXHUq7vAI2ra4VMOqc86YiJdgQX0')
+@bot.message_handler(commands=["start"])
+def start(m, res=False):
+    bot.send_message(m.chat.id, 'молодчина')
+
+@bot.message_handler (content_types=["text"])
+def handle_text(message):
+    film_id1=int(message.text)
+
+    connection = psycopg2.connect(host='localhost', dbname='db', user='postgres', password='qwerty')
+    cursor = connection.cursor()
+    request = f"select * from cars where id = {film_id1}"
+    cursor.execute(request)
+    b = cursor.fetchall()
+    print(b[0][0])
+    img = open(f"C:/PycharmProjects/pythonProject/images/{film_id1+6}.jpg", 'rb')
+    bot.send_photo(message.chat.id, img)
+    bot.send_message(message.chat.id, f"ID = {b[0][0]}\nname = {b[0][1]}\nжанр = {b[0][2]}")
+bot.polling(none_stop=True, interval=0)
