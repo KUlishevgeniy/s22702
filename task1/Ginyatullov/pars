@@ -1,0 +1,58 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+import psycopg2
+import wget
+import requests
+from bs4 import BeautifulSoup
+import os
+
+
+base_url = "https://www.afisha.ru/selection/100-luchshih-filmov-za-polveka/"
+response = requests.get(base_url)
+soup = BeautifulSoup(response.content, 'html.parser')
+img_tags = soup.find_all('img')
+
+if not os.path.exists('images'):
+    os.makedirs('images')
+count = 0
+for img in img_tags:
+    try:
+        count = count + 1
+        img_url = img['src']
+        img_response = requests.get(img_url)
+
+        with open('images/' + f"{count}.jpg", 'wb') as f:
+            f.write(img_response.content)
+            print('Картинка сохранена: ', img_url)
+        #os.rename("img_url.jpg", f"{count}.jpg")
+    except:
+        pass
+
+connection = psycopg2.connect(host='localhost', dbname='db', user='postgres', password='qwerty')
+
+cursor=connection.cursor()
+links = "https://www.afisha.ru/selection/100-luchshih-filmov-za-polveka/"
+s=Service('C:\chromedriver.exe')
+browser = webdriver.Chrome(service=s)
+browser.get(links)
+html_text = browser.page_source
+soup = BeautifulSoup(html_text, 'lxml')
+link = soup.find_all('li', class_="lHiNF c6kcq gX7y9")
+
+count=0
+
+for i in link:
+    name = i.find('div', class_='mQ7Bh')
+    genre= i.find('a', class_='vcSoT jnZXU')
+    try:
+        name= name.text
+        genre = genre.text
+        print(name)
+        print(genre)
+    except AttributeError:
+        print('miu')
+    count +=1
+
+    insert_query=f"""INSERT INTO cars(id, kek, model) VALUES ({count}, '{name}', '{genre}');"""
+    cursor.execute(insert_query)
+    connection.commit()
