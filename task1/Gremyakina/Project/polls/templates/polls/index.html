@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% load static %}
+<meta charset="utf-8" />
+<title>ВЕБ-САЙТ МАРИИ ГРЕМЯКИНОЙ</title>
+<style>
+div {
+background: #FAEBD7;
+color: #000000;
+margin: 5px;
+}
+img {
+margin: 10px auto 20px;
+display: block;
+padding: 10px;
+}
+</style>
+</head>
+<body background="{% static 'polls/2.jpg' %}">
+<table
+border="1"
+align="center"
+rules="rows"
+style="width:60%;">
+<tr>
+<td>
+<table
+border="1"
+background="{% static 'polls/1.avif' %}"
+bgcolor="#7FFFD4"
+cellpadding="10"
+style="width:100%; border-radius:5px;">
+<tr>
+<th>
+<h1>ВЕБ-САЙТ МАРИИ ГРЕМЯКИНОЙ</h1>
+</th>
+</tr>
+</table>
+<table
+border="1"
+bgcolor="#e6e6fa"
+cellpadding="10"
+style="width:100%; border-radius:5px;">
+<tr>
+<td
+rowspan="2"
+style="width:80%">
+
+    {% autoescape off %}
+    {{data}}
+    {% endautoescape %}
+
+</td>
+</tr>
+</table>
+<table
+border="1"
+bgcolor="#7FFFD4"
+height="100"
+cellpadding="10"
+style="width:100%; border-radius:5px;">
+<tr>
+<th>
+<h3>Здравствуйте уважаемые будущие веб-мастера!
+Мне 55 лет и я рад приветствовать Вас на своём сайте.
+Этот сайт первый, который я разработал самостоятельно,
+а до этого умел только входить в интернет.</p>
+
+<p style="text-indent:20px">Почему я решил его сделать?
+За те 3 месяца, пока разбирался в
+сайтостроении и создавал этот ресурс обнаружилось,
+что авторы руководств по созданию
+сайтов считают многие нюансы само собой разумеющимися
+и не обращают на них внимание
+А мне, учитывая возраст и «опыт», было не просто
+понять как раз эти нюансы, они отнимали больше всего
+времени.</h3>
+</th>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>
