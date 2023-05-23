@@ -1,20 +1,45 @@
+import telebot
+import random
+from telebot import types
+import time
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from bs4 import BeautifulSoup
+import wget
 import psycopg2
-import  telebot
 
 bot = telebot.TeleBot('6283023153:AAFODdWlrvMZBP-ONyU1DiRCO1c6t-grZ7k')
+def load():
+    bot = telebot.TeleBot('6283023153:AAFODdWlrvMZBP-ONyU1DiRCO1c6t-grZ7k')
+    connection = psycopg2.connect(host='localhost', dbname='postgres', user='postgres', password='Q1w2e3r4')
+    cursor = connection.cursor()
 
 @bot.message_handler(commands=["start"])
 def start(m, res=False):
-    bot.send_message(m.chat.id, 'Введите число от 0-20')
+    markup = types.ReplyKeyboardMarkup(resize_keyboard = True)
+    films = types.KeyboardButton("Список фильмов")
+    markup.add(films)
+    bot.send_message(m.chat.id, "Добро пожаловать!\n", reply_markup= markup)
 
-@bot.message_handler (content_types=["text"])
+@bot.message_handler(content_types=["text"])
 def handle_text(message):
-    id=int(message.text)
-
     connection = psycopg2.connect(host='localhost', dbname='postgres', user='postgres', password='Q1w2e3r4')
     cursor = connection.cursor()
-    request = f"select * from anime where id = {id}"
-    cursor.execute(request)
-    b = cursor.fetchall()
-    bot.send_message(message.chat.id, 'Аниме занимает место - 'f"{b[0][2]}\n" 'Название)' f"{b[0][1]}\n {b[0][3]}\n ")
-bot.polling(none_stop=True, interval=0)
+    if message.text.strip() == 'Список фильмов':
+        for place in range(1, 21):
+            cursor.execute(f"select * from anime where id = {place}")
+            b = cursor.fetchall()
+            bot.send_message(message.chat.id, 'id - 'f"{b[0][2]}\n" 'Название)' f"{b[0][1]}\n ")
+            print(b)
+            time.sleep(0.5)
+    else:
+
+        id=int(message.text)
+        connection = psycopg2.connect(host='localhost', dbname='postgres', user='postgres', password='Q1w2e3r4')
+        cursor = connection.cursor()
+        request = f"select * from anime where id = {id}"
+        cursor.execute(request)
+        c = cursor.fetchall()
+        bot.send_message(message.chat.id, 'Аниме занимает место - 'f"{c[0][2]}\n" 'Название)' f"{c[0][1]}\n {c[0][3]}\n ")
+bot.polling(none_stop = True, interval = 0)
+
